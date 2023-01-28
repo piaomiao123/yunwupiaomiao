@@ -1,0 +1,141 @@
+crontab用来定期执行程序的命令
+（https://www.runoob.com/linux/linux-comm-crontab.html）
+-e : 执行文字编辑器来设定时程表，内定的文字编辑器是 VI，如果你想用别的文字编辑器，则请先设定 VISUAL 环境变数来指定使用那个文字编辑器(比如说 setenv VISUAL joe)
+-r : 删除目前的时程表
+-l : 列出目前的时程表
+
+tail用于查看文件的内容
+(-f 常用于查阅正在改变的日志文件。)
+-f 循环读取
+-q 不显示处理信息
+-v 显示详细的处理信息
+-c<数目> 显示的字节数
+-n<行数> 显示文件的尾部 n 行内容x
+--pid=PID 与-f合用,表示在进程ID,PID死掉之后结束
+-q, --quiet, --silent 从不输出给出文件名的首部
+-s, --sleep-interval=S 与-f合用,表示在每次反复的间隔休眠S秒
+
+添加端口到防火墙：
+firewall-cmd --zone=public --add-port=6380/tcp --permanent							elastic		apm_system
+firewall-cmd --zone=public --remove-port=9200/tcp --permanent  # 关闭端口
+查看端口是否添加到防火墙
+firewall-cmd --query-port=6380/tcp
+重启防火墙
+firewall-cmd --reload
+查看防火墙状态
+systemctl status firewalld
+设置firewall开机启动
+systemctl enable firewalld
+禁止firewall开机启动
+systemctl disable firewalld
+
+
+
+查看端口占用：
+netstat -lnpt |grep 5672
+
+查看进程的详细信息
+ps 6832
+
+查看监听的端口
+netstat -lnpt
+
+查看磁盘使用情况
+df -h
+
+
+环境变量：
+nameserver环境变量：vim /etc/profile
+添加：export NAMESRV_ADDR=127.0.0.1:9876
+source /etc/profile
+
+
+CentOS 重启网络服务，输入下面的命令：systemctl retart network.service 或 systemctl restart network。
+
+CentOS  启动网络服务，输入下面的命令：systemctl start network.service，或 systemctl start network。
+
+CentOS  停止网络服务，输入命令：systemctl stop network.service，或 systemctl stop network。
+
+添加命令到bin：
+ln -s /usr/local/redis/bin/redis-cli /usr/bin/redis-cli
+
+nohup sh bin/mqnamesrv &
+nohup sh bin/mqnamesrv >/dev/null 2>&1 &
+tail -f ~/logs/rocketmqlogs/namesrv.log
+
+
+清理缓存：echo 3 > /proc/sys/vm/drop_caches
+
+设置docker自启动：
+systemctl enable docker
+
+
+systemctl 
+
+daemon-reload: 重新加载某个服务的配置文件，如果新安装了一个服务，归属于 systemctl 管理，要是新服务的服务程序配置文件生效，需重新加载。
+
+
+
+
+开机自启：
+（1）编辑zookeeper.service文件
+
+　　　　vim /usr/lib/systemd/system/zookeeper.service 
+
+　　　　加入如下内容
+
+复制代码
+[Unit]
+Description=zookeeper
+After=network.target remote-fs.target nss-lookup.target
+[Service]
+Type=forking
+ExecStart=/usr/local/zookeeper/zookeeper-3.4.12/bin/zkServer.sh start
+ExecReload=/usr/local/zookeeper/zookeeper-3.4.12/bin/zkServer.sh restart
+ExecStop=/usr/local/zookeeper/zookeeper-3.4.12/bin/zkServer.sh stop
+[Install]
+WantedBy=multi-user.target
+复制代码
+　　（2）生效
+
+　　　　systemctl daemon-reload
+
+　　（3）改变文件权限
+
+　　　　chmod 777 /usr/lib/systemd/system/zookeeper.service
+
+　　（4）systemctl开机启动zookeeper
+
+　　　　systemctl enable /usr/lib/systemd/system/zookeeper.service
+
+　　　　或
+
+　　　　systemctl enable /usr/lib/systemd/system/zookeeper
+
+　　（5）查看是否开机启动
+
+　　　　systemctl is-enabled zookeeper.service
+
+　　（6）systemctl取消开机启动redis
+
+　　　　systemctl disable zookeeper.service
+
+
+
+
+
+查找软件：
+rpm -qa|grep kibana
+卸载软件：
+yum -y remove kibana.x86_64 
+
+
+
+
+
+maven本地安装jar包
+mvn install:install-file -Dfile=gh-epay-client-2.1.1.jar  -DgroupId=com.guohualife.epay -DartifactId=gh-epay-client -Dversion=2.1.1 -Dpackaging=jar
+
+
+
+
